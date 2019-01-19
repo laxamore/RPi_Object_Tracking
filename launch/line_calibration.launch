@@ -1,0 +1,4 @@
+<launch>
+	<node pkg="rpi_object_tracking" type="raspicam_bridge.py" name="raspicam_bridge" />
+	<node pkg="rpi_object_tracking" type="tracking_calibration" name="tracking_calibration" />
+</launch>

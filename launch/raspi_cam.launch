@@ -1,0 +1,3 @@
+<launch>
+	<node pkg="rpi_object_tracking" type="raspi_cam.py" name="rasp_cam" />
+</launch>
