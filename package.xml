@@ -2,7 +2,7 @@
 <package format="2">
   <name>rpi_object_tracking</name>
   <version>0.0.0</version>
-  <description>The sas_underwater package</description>
+  <description>RPi Object Tracking package</description>
 
   <maintainer email="laxamore@student.telkomuniversity.ac.id">pi</maintainer>
 
