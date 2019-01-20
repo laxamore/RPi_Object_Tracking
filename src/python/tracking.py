@@ -1,9 +1,9 @@
-# #!/usr/bin/env python3
+#!/usr/bin/env python3
 
-# from picamera.array import PiRGBArray
-# from picamera import PiCamera
-# import time
-# import cv2
+from picamera.array import PiRGBArray
+from picamera import PiCamera
+import time
+import cv2
 import yaml
 import os
 
