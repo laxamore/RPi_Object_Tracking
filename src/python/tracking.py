@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 from picamera.array import PiRGBArray
 from picamera import PiCamera
@@ -6,23 +6,24 @@ import time
 import cv2
 import yaml
 import os
+import numpy as np
 
 script_dir = os.path.dirname(os.path.realpath(__file__)) 
 
 stream = file(script_dir + '/../../cfg/cv/tracking_calibration.yaml', 'r')
 calibValue = yaml.load(stream)
 
-lower = [
+lower = np.array([
 	calibValue['h_low'],
 	calibValue['s_low'],
 	calibValue['v_low']
-]
+])
 
-upper = [
+upper = np.array([
 	calibValue['h_up'],
 	calibValue['s_up'],
 	calibValue['v_up']
-]
+])
 
 # print lower, upper
 
@@ -54,9 +55,9 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 	objCntr = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
 
 	if len(objCntr) > 0:
-        c = max(objCntr, key=cv2.contourArea)
-        M = cv2.moments(c)
-        center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
+		c = max(objCntr, key=cv2.contourArea)
+		M = cv2.moments(c)
+		center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
 		cv2.circle(image, center, 5, (0, 255, 0), -1)
 	
 	cv2.imshow("Frame", image)
