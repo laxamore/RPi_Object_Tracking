@@ -14,8 +14,8 @@
 using namespace cv;
 using namespace std;
 
-string path = ros::package::getPath("sas_underwater");
-YAML::Node calibration_data = YAML::LoadFile(path + "/cfg/cv/line_calibration.yaml");
+string path = ros::package::getPath("rpi_object_tracking");
+YAML::Node calibration_data = YAML::LoadFile(path + "/cfg/cv/tracking_calibration.yaml");
 string calib = "";
 
 Mat kernel, frame, mask, hsv;
