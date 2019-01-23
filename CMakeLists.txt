@@ -16,7 +16,6 @@ catkin_package(
 
 )
 
-find_package(raspicam REQUIRED)
 find_package(OpenCV REQUIRED)
 
 include_directories(
