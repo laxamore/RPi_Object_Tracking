@@ -5,9 +5,6 @@
 #include <ros/package.h>
 #include <yaml-cpp/yaml.h>
 
-#include <image_transport/image_transport.h>
-#include <cv_bridge/cv_bridge.h>
-
 #include <opencv2/highgui/highgui.hpp>
 #include "opencv2/imgproc/imgproc.hpp"
 
@@ -96,9 +93,29 @@ void on_trackbar(int, void*) {
   }
 }
 
-void imageCallback(const sensor_msgs::ImageConstPtr& msg) {
-  try {
-    frame = cv_bridge::toCvShare(msg, "8UC3")->image;
+int main(int argc, char* argv[]) {
+  kernel = Mat::ones(1, 1, CV_8UC1);
+
+  for (int i = 0; i < 3; i++) {
+    intLow[i] = Lower[i];
+    intUp[i] = Upper[i];
+  } 
+
+  namedWindow("frame");
+  namedWindow("mask");
+  namedWindow("trackbar", CV_WINDOW_FREERATIO);
+  setMouseCallback("frame", leftClick);
+
+  createTrackbar("H Low", "trackbar", &intLow[0], 255, on_trackbar);
+  createTrackbar("S Low", "trackbar", &intLow[1], 255, on_trackbar);
+  createTrackbar("V Low", "trackbar", &intLow[2], 255, on_trackbar);
+
+  createTrackbar("H Up", "trackbar", &intUp[0], 255, on_trackbar);
+  createTrackbar("S Up", "trackbar", &intUp[1], 255, on_trackbar);
+  createTrackbar("V Up", "trackbar", &intUp[2], 255, on_trackbar);
+
+  for(;;) {
+    frame = imread(path + "/image_capture/image.jpg", CV_LOAD_IMAGE_COLOR);
 
     if (!getROI) {
       if (!sampling && !saveROI) {
@@ -177,40 +194,9 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg) {
       imshow("frame", frame);
     }
 
-    if ((char)27 == (char)waitKey(1)) ros::shutdown();
+    if ((char)27 == (char)waitKey(1)) break;
   }
-  catch (cv_bridge::Exception& e) {
-    ROS_ERROR("Could not convert from '%s' to '8UC3'.", msg->encoding.c_str());
-  }
-}
 
-int main(int argc, char* argv[]) {
-  ros::init(argc, argv, "tracking_calibration");
-  ros::NodeHandle nh;
-  image_transport::ImageTransport it(nh);
-  image_transport::Subscriber camSub = it.subscribe("raspi_cam_img", 1, imageCallback); 
-
-  kernel = Mat::ones(1, 1, CV_8UC1);
-
-  for (int i = 0; i < 3; i++) {
-    intLow[i] = Lower[i];
-    intUp[i] = Upper[i];
-  } 
-
-  namedWindow("frame");
-  namedWindow("mask");
-  namedWindow("trackbar", CV_WINDOW_FREERATIO);
-  setMouseCallback("frame", leftClick);
-
-  createTrackbar("H Low", "trackbar", &intLow[0], 255, on_trackbar);
-  createTrackbar("S Low", "trackbar", &intLow[1], 255, on_trackbar);
-  createTrackbar("V Low", "trackbar", &intLow[2], 255, on_trackbar);
-
-  createTrackbar("H Up", "trackbar", &intUp[0], 255, on_trackbar);
-  createTrackbar("S Up", "trackbar", &intUp[1], 255, on_trackbar);
-  createTrackbar("V Up", "trackbar", &intUp[2], 255, on_trackbar);
-
-  ros::spin();
   destroyAllWindows();
   return 0;
 }
